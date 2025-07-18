@@ -29,11 +29,7 @@ const userSchema = z.object({
     .number()
     .min(18, "You must be at least 18 years old")
     .max(120, "Age must be realistic"),
-  website: z
-    .string()
-    .url("Please enter a valid URL")
-    .optional()
-    .or(z.literal("")),
+  website: z.url("Please enter a valid URL").optional().or(z.literal("")),
   bio: z.string().max(500, "Bio must be less than 500 characters").optional(),
   terms: z
     .boolean()

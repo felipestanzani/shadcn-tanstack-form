@@ -13,37 +13,116 @@ import {
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
 
-type FormType<TFormData, TSubmitMeta> = ReactFormExtendedApi<
+type FormType<
   TFormData,
-  undefined | FormValidateOrFn<TFormData>,
-  undefined | FormValidateOrFn<TFormData> | any,
-  undefined | FormAsyncValidateOrFn<TFormData>,
-  undefined | FormValidateOrFn<TFormData>,
-  undefined | FormAsyncValidateOrFn<TFormData>,
-  undefined | FormValidateOrFn<TFormData>,
-  undefined | FormAsyncValidateOrFn<TFormData>,
-  undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+> = ReactFormExtendedApi<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer,
   TSubmitMeta
 >
 
-type FormContextValue<TFormData, TSubmitMeta> = {
-  form: FormType<TFormData, TSubmitMeta> | null
+type FormContextValue<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+> = {
+  form: FormType<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta
+  > | null
 }
 
-const FormContext = React.createContext<FormContextValue<any, any>>({
+const FormContext = React.createContext<
+  FormContextValue<any, any, any, any, any, any, any, any, any, any>
+>({
   form: null,
 })
 
-type FormProps<TFormData, TSubmitMeta> = {
-  form: FormType<TFormData, TSubmitMeta>
+type FormProps<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+> = {
+  form: FormType<
+    TFormData,
+    TOnMount,
+    TOnChange,
+    TOnChangeAsync,
+    TOnBlur,
+    TOnBlurAsync,
+    TOnSubmit,
+    TOnSubmitAsync,
+    TOnServer,
+    TSubmitMeta
+  > | null
   children: React.ReactNode
 } & React.ComponentProps<"form">
 
-function Form<TFormData, TSubmitMeta>({
+function Form<
+  TFormData,
+  TOnMount extends undefined | FormValidateOrFn<TFormData>,
+  TOnChange extends undefined | FormValidateOrFn<TFormData>,
+  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
+  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
+  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
+  TSubmitMeta,
+>({
   form,
   children,
   ...props
-}: FormProps<TFormData, TSubmitMeta>) {
+}: FormProps<
+  TFormData,
+  TOnMount,
+  TOnChange,
+  TOnChangeAsync,
+  TOnBlur,
+  TOnBlurAsync,
+  TOnSubmit,
+  TOnSubmitAsync,
+  TOnServer,
+  TSubmitMeta
+>) {
   return (
     <FormContext.Provider value={{ form }}>
       <form {...props}>{children}</form>
@@ -51,7 +130,6 @@ function Form<TFormData, TSubmitMeta>({
   )
 }
 
-// Field context to hold field information
 type FormFieldContextValue = {
   field: AnyFieldApi | null
   name: string
