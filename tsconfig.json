@@ -1,0 +1,19 @@
+{
+  "include": ["**/*.ts", "**/*.tsx", "src/main.jsx"],
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "target": "ES2022",
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["vitest/globals"]
+  }
+}
