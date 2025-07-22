@@ -25,7 +25,7 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 2. **Install TanStack Form**:
 
    ```bash
-   npm install @tanstack/react-form
+   pnpm add @tanstack/react-form
    ```
 
 3. **Add the Form component** to your project:
@@ -34,7 +34,7 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 
 4. **Add the form-hook** to your project:
 
-Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
+   Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
 
 5. **Install additional shadcn/ui components** that you'll use with forms:
    ```bash
@@ -44,7 +44,7 @@ Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder
 ### Prerequisites
 
 - Node.js 18+
-- npm or yarn
+- pnpm
 
 ## 📖 Usage
 
@@ -294,16 +294,16 @@ The integration provides the following components:
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm test -- --watch
+pnpm test -- --watch
 
 # Run tests with coverage
-npm test -- --coverage
+pnpm test -- --coverage
 
 # Type checking
-npm run type-check
+pnpm run type-check
 ```
 
 ### Test Coverage
@@ -386,18 +386,18 @@ test("validates field on change", async () => {
 
 ```bash
 # Development
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run preview      # Preview production build
+pnpm run dev          # Start development server
+pnpm run build        # Build for production
+pnpm run preview      # Preview production build
 
 # Code Quality
-npm run lint         # Run ESLint
-npm run type-check   # Run TypeScript compiler
+pnpm run lint         # Run ESLint
+pnpm run type-check   # Run TypeScript compiler
 
 # Testing
-npm test             # Run tests with Vitest
-npm test -- --watch  # Run tests in watch mode
-npm test -- --coverage # Run tests with coverage
+pnpm test             # Run tests with Vitest
+pnpm test -- --watch  # Run tests in watch mode
+pnpm test -- --coverage # Run tests with coverage
 ```
 
 ## 🛠️ Dependencies
