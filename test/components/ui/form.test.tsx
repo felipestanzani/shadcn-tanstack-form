@@ -364,3 +364,41 @@ describe("Form Components", () => {
     })
   })
 })
+
+describe("Form edge cases", () => {
+  it("throws if FormLabel is used outside FormItem", () => {
+    const spy = vi.spyOn(console, "error").mockImplementation(() => {})
+    expect(() => {
+      render(<FormLabel>Name</FormLabel>)
+    }).toThrow(
+      "`fieldContext` only works when within a `fieldComponent` passed to `createFormHook`"
+    )
+    spy.mockRestore()
+  })
+
+  it("renders children if no error is present", async () => {
+    function ChildrenMessageForm() {
+      const form = useAppForm({
+        defaultValues: { foo: "" },
+        validators: {
+          onChange: () => undefined,
+        },
+      })
+      return (
+        <form.AppForm>
+          <Form>
+            <form.AppField name="foo">
+              {() => (
+                <FormItem>
+                  <FormMessage>Child message</FormMessage>
+                </FormItem>
+              )}
+            </form.AppField>
+          </Form>
+        </form.AppForm>
+      )
+    }
+    render(<ChildrenMessageForm />)
+    expect(screen.getByText("Child message")).toBeInTheDocument()
+  })
+})
