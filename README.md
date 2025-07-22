@@ -32,7 +32,11 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 
    Copy the `form.tsx` file from this repository to your `components/ui/` folder.
 
-4. **Install additional shadcn/ui components** that you'll use with forms:
+4. **Add the form-hook** to your project:
+
+Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
+
+5. **Install additional shadcn/ui components** that you'll use with forms:
    ```bash
    npx shadcn@latest add button input label checkbox textarea
    ```
@@ -47,10 +51,9 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 ### Basic Form Example
 
 ```tsx
-import { useForm } from "@tanstack/react-form"
+import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
-  FormField,
   FormItem,
   FormLabel,
   FormControl,
@@ -61,7 +64,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
 export default function SimpleForm() {
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -74,55 +77,100 @@ export default function SimpleForm() {
   })
 
   return (
-    <Form
-      form={form}
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}
-      className="space-y-4"
-    >
-      <FormField
-        name="firstName"
-        validators={{
-          onChange: ({ value }: { value: string }) =>
-            !value
-              ? "A first name is required"
-              : value.length < 2
-                ? "First name must be at least 2 characters"
-                : undefined,
-        }}
-      >
-        {(field) => (
-          <FormItem>
-            <FormLabel>First Name</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter your first name"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </FormControl>
-            <FormDescription>
-              This is your public display first name.
-            </FormDescription>
-            <FormMessage />
-          </FormItem>
-        )}
-      </FormField>
+    <form.AppForm>
+      <Form className="space-y-4">
+        <form.AppField
+          name="firstName"
+          validators={{
+            onChange: ({ value }: { value: string }) =>
+              !value
+                ? "A first name is required"
+                : value.length < 2
+                  ? "First name must be at least 2 characters"
+                  : undefined,
+          }}
+        >
+          {(field) => (
+            <FormItem>
+              <FormLabel>First Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your first name"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </FormControl>
+              <FormDescription>
+                This is your public display first name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        </form.AppField>
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
-          <Button type="submit" disabled={!canSubmit}>
-            {isSubmitting ? "Submitting..." : "Submit"}
-          </Button>
-        )}
-      </form.Subscribe>
-    </Form>
+        <form.AppField
+          name="lastName"
+          validators={{
+            onChange: ({ value }: { value: string }) =>
+              !value
+                ? "A last name is required"
+                : value.length < 2
+                  ? "Last name must be at least 2 characters"
+                  : undefined,
+          }}
+        >
+          {(field) => (
+            <FormItem>
+              <FormLabel>Last Name</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your last name"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </FormControl>
+              <FormDescription>
+                This is your public display last name.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        </form.AppField>
+
+        <form.AppField name="email">
+          {(field) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                />
+              </FormControl>
+              <FormDescription>
+                We'll never share your email with anyone else.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        </form.AppField>
+
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
+          {([canSubmit, isSubmitting]) => (
+            <Button type="submit" disabled={!canSubmit}>
+              {isSubmitting ? "Submitting..." : "Submit"}
+            </Button>
+          )}
+        </form.Subscribe>
+      </Form>
+    </form.AppForm>
   )
 }
 ```
@@ -130,11 +178,10 @@ export default function SimpleForm() {
 ### Advanced Form with Zod Validation
 
 ```tsx
-import { useForm } from "@tanstack/react-form"
 import { z } from "zod"
+import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
-  FormField,
   FormItem,
   FormLabel,
   FormControl,
@@ -151,19 +198,15 @@ const userSchema = z.object({
     .string()
     .min(2, "First name must be at least 2 characters")
     .max(50, "First name must be less than 50 characters"),
-  email: z.email("Please enter a valid email address"),
-  age: z.number().min(18, "You must be at least 18 years old"),
   terms: z.boolean().refine((val) => val === true, "You must accept the terms"),
 })
 
 type UserFormData = z.infer<typeof userSchema>
 
 export default function ZodForm() {
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       firstName: "",
-      email: "",
-      age: 18,
       terms: false,
     } as UserFormData,
     validators: {
@@ -175,56 +218,50 @@ export default function ZodForm() {
   })
 
   return (
-    <Form
-      form={form}
-      onSubmit={(e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        form.handleSubmit()
-      }}
-      className="space-y-6"
-    >
-      <FormField name="firstName">
-        {(field) => (
-          <FormItem>
-            <FormLabel>First Name *</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter your first name"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      </FormField>
+    <form.AppForm>
+      <Form className="space-y-6">
+        <form.AppField name="firstName">
+          {(field) => (
+            <FormItem>
+              <FormLabel>First Name *</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter your first name"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        </form.AppField>
 
-      <FormField name="terms">
-        {(field) => (
-          <FormItem className="flex items-center space-x-2">
-            <FormControl>
-              <Checkbox
-                checked={field.state.value}
-                onCheckedChange={(checked) => field.handleChange(checked)}
-              />
-            </FormControl>
-            <FormLabel>Accept terms and conditions *</FormLabel>
-            <FormMessage />
-          </FormItem>
-        )}
-      </FormField>
+        <form.AppField name="terms">
+          {(field) => (
+            <FormItem className="flex items-center space-x-2">
+              <FormControl>
+                <Checkbox
+                  checked={field.state.value}
+                  onCheckedChange={(checked) => field.handleChange(checked)}
+                />
+              </FormControl>
+              <FormLabel>Accept terms and conditions *</FormLabel>
+              <FormMessage />
+            </FormItem>
+          )}
+        </form.AppField>
 
-      <form.Subscribe
-        selector={(state) => [state.canSubmit, state.isSubmitting]}
-      >
-        {([canSubmit, isSubmitting]) => (
-          <Button type="submit" disabled={!canSubmit}>
-            {isSubmitting ? "Creating Account..." : "Create Account"}
-          </Button>
-        )}
-      </form.Subscribe>
-    </Form>
+        <form.Subscribe
+          selector={(state) => [state.canSubmit, state.isSubmitting]}
+        >
+          {([canSubmit, isSubmitting]) => (
+            <Button type="submit" disabled={!canSubmit}>
+              {isSubmitting ? "Creating Account..." : "Create Account"}
+            </Button>
+          )}
+        </form.Subscribe>
+      </Form>
+    </form.AppForm>
   )
 }
 ```
@@ -395,6 +432,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
+- [Luca | LeCarbonator](https://github.com/LeCarbonator) - For the great contribution fixing the component.
 - [TanStack Form](https://tanstack.com/form) - For the excellent form library
 - [shadcn/ui](https://ui.shadcn.com/) - For the beautiful component system
 - [Radix UI](https://www.radix-ui.com/) - For accessible UI primitives

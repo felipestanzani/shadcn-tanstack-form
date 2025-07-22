@@ -43,7 +43,6 @@ function useFormItemContext() {
   )
 
   const formItem = React.useMemo(() => {
-    // don't show errors on untouched fields unless the user attempted to submit before
     const showError = isTouched || submissionAttempts > 0
 
     let errorMessage: string | null = null
@@ -54,11 +53,9 @@ function useFormItemContext() {
         errorMessage = error
       } else if (typeof error === "object" && error !== null) {
         if ("message" in error && typeof error.message === "string") {
-          // there is a `message` string property in the object
           errorMessage = error.message
         }
       } else if (error !== null && error !== undefined) {
-        // as fallback, stringify truthy errors
         errorMessage = String(error)
       }
     }
