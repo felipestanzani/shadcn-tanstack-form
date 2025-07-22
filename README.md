@@ -34,9 +34,9 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 
 4. **Add the form-hook** to your project:
 
-Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/form-hook.tsx` folder.
+Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
 
-4. **Install additional shadcn/ui components** that you'll use with forms:
+5. **Install additional shadcn/ui components** that you'll use with forms:
    ```bash
    npx shadcn@latest add button input label checkbox textarea
    ```
@@ -51,7 +51,7 @@ Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/form-hoo
 ### Basic Form Example
 
 ```tsx
-import { useAppForm } from "./hooks/form-hook"
+import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
   FormItem,
@@ -209,8 +209,6 @@ export default function ZodForm() {
   const form = useAppForm({
     defaultValues: {
       firstName: "",
-      email: "",
-      age: 18,
       terms: false,
     } as UserFormData,
     validators: {
