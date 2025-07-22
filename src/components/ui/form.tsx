@@ -27,6 +27,13 @@ function Form(props: React.ComponentProps<"form">) {
 
 const IdContext = React.createContext<string>(null as never)
 
+/**
+ * Provides context and accessibility information for a form item, including generated IDs and error state.
+ *
+ * Retrieves the current field context and unique ID, determines if an error message should be shown based on field touch state or form submission attempts, and extracts the first error message if present. Returns IDs for form control, description, and message elements, along with the error message and a boolean indicating if an error should be displayed.
+ *
+ * @returns An object containing generated IDs, the error message (if any), and a flag indicating error presence.
+ */
 function useFormItemContext() {
   const field = useFieldContext()
   const idContext = React.useContext(IdContext)
