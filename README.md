@@ -179,7 +179,7 @@ export default function SimpleForm() {
 
 ```tsx
 import { z } from "zod"
-import { useAppForm } from "./hooks/form-hook"
+import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
   FormItem,
@@ -198,8 +198,6 @@ const userSchema = z.object({
     .string()
     .min(2, "First name must be at least 2 characters")
     .max(50, "First name must be less than 50 characters"),
-  email: z.string().email("Please enter a valid email address"),
-  age: z.number().min(18, "You must be at least 18 years old"),
   terms: z.boolean().refine((val) => val === true, "You must accept the terms"),
 })
 
