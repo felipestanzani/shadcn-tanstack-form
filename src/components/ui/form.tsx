@@ -3,225 +3,89 @@
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
-import {
-  AnyFieldApi,
-  FormAsyncValidateOrFn,
-  FormValidateOrFn,
-  ReactFormExtendedApi,
-} from "@tanstack/react-form"
-
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { createFormHookContexts, useStore } from "@tanstack/react-form"
 
-type FormType<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
-> = ReactFormExtendedApi<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnServer,
-  TSubmitMeta
->
+const { useFieldContext, useFormContext, fieldContext, formContext } =
+  createFormHookContexts()
 
-type FormContextValue<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
-> = {
-  form: FormType<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta
-  > | null
-}
+function Form(props: React.ComponentProps<"form">) {
+  const form = useFormContext()
 
-const FormContext = React.createContext<
-  FormContextValue<any, any, any, any, any, any, any, any, any, any>
->({
-  form: null,
-})
-
-type FormProps<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
-> = {
-  form: FormType<
-    TFormData,
-    TOnMount,
-    TOnChange,
-    TOnChangeAsync,
-    TOnBlur,
-    TOnBlurAsync,
-    TOnSubmit,
-    TOnSubmitAsync,
-    TOnServer,
-    TSubmitMeta
-  > | null
-  children: React.ReactNode
-} & React.ComponentProps<"form">
-
-function Form<
-  TFormData,
-  TOnMount extends undefined | FormValidateOrFn<TFormData>,
-  TOnChange extends undefined | FormValidateOrFn<TFormData>,
-  TOnChangeAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnBlur extends undefined | FormValidateOrFn<TFormData>,
-  TOnBlurAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnSubmit extends undefined | FormValidateOrFn<TFormData>,
-  TOnSubmitAsync extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TOnServer extends undefined | FormAsyncValidateOrFn<TFormData>,
-  TSubmitMeta,
->({
-  form,
-  children,
-  ...props
-}: FormProps<
-  TFormData,
-  TOnMount,
-  TOnChange,
-  TOnChangeAsync,
-  TOnBlur,
-  TOnBlurAsync,
-  TOnSubmit,
-  TOnSubmitAsync,
-  TOnServer,
-  TSubmitMeta
->) {
   return (
-    <FormContext.Provider value={{ form }}>
-      <form {...props}>{children}</form>
-    </FormContext.Provider>
+    <form
+      onSubmit={(e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        form.handleSubmit()
+      }}
+      {...props}
+    />
   )
 }
 
-type FormFieldContextValue = {
-  field: AnyFieldApi | null
-  name: string
-}
+const IdContext = React.createContext<string>(null as never)
 
-const FormFieldContext = React.createContext<FormFieldContextValue>({
-  field: null,
-  name: "",
-})
+function useFormItemContext() {
+  const field = useFieldContext()
+  const idContext = React.useContext(IdContext)
 
-function FormField<TFormData = any, TFieldName extends string = string>({
-  children,
-  name,
-  ...fieldProps
-}: {
-  children: (field: AnyFieldApi) => React.ReactNode
-  name: TFieldName
-  [key: string]: unknown
-}) {
-  const { form } = React.useContext(FormContext)
-
-  if (!form) {
-    throw new Error("FormField must be used within a Form component")
+  if (typeof idContext !== "string") {
+    throw new Error("Form Item components should be used within <FormItem>")
   }
 
-  return (
-    <form.Field name={name} {...fieldProps}>
-      {(field: AnyFieldApi) => (
-        <FormFieldContext.Provider value={{ field, name }}>
-          {children(field)}
-        </FormFieldContext.Provider>
-      )}
-    </form.Field>
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  const isTouched = useStore(field.store, (state) => state.meta.isTouched)
+  const submissionAttempts = useStore(
+    field.form.store,
+    (state) => state.submissionAttempts
   )
-}
 
-const useFormField = () => {
-  const fieldContext = React.useContext(FormFieldContext)
-  const itemContext = React.useContext(FormItemContext)
+  const formItem = React.useMemo(() => {
+    // don't show errors on untouched fields unless the user attempted to submit before
+    const showError = isTouched || submissionAttempts > 0
 
-  if (!fieldContext.field) {
-    throw new Error("useFormField should be used within <FormField>")
-  }
+    let errorMessage: string | null = null
+    if (showError && errors.length > 0) {
+      const error = errors[0]
 
-  const { id } = itemContext
-  const field = fieldContext.field
-  const errors = field.state.meta.errors
-  const error =
-    errors && errors.length > 0
-      ? {
-          message:
-            typeof errors[0] === "object" &&
-            errors[0] !== null &&
-            "message" in errors[0]
-              ? (errors[0] as { message: string }).message
-              : String(errors[0]),
+      if (typeof error === "string") {
+        errorMessage = error
+      } else if (typeof error === "object" && error !== null) {
+        if ("message" in error && typeof error.message === "string") {
+          // there is a `message` string property in the object
+          errorMessage = error.message
         }
-      : null
+      } else if (error !== null && error !== undefined) {
+        // as fallback, stringify truthy errors
+        errorMessage = String(error)
+      }
+    }
 
-  return {
-    id,
-    name: fieldContext.name,
-    formItemId: `${id}-form-item`,
-    formDescriptionId: `${id}-form-item-description`,
-    formMessageId: `${id}-form-item-message`,
-    error,
-    invalid: !field.state.meta.isValid && field.state.meta.isTouched,
-    isDirty: field.state.meta.isDirty,
-    isTouched: field.state.meta.isTouched,
-    isValidating: field.state.meta.isValidating,
-  }
+    return {
+      formControlId: `${idContext}-form-item`,
+      formDescriptionId: `${idContext}-form-item-description`,
+      formMessageId: `${idContext}-form-item-message`,
+      error: errorMessage,
+      hasError: showError && errorMessage !== null,
+    }
+  }, [idContext, isTouched, submissionAttempts, errors])
+
+  return formItem
 }
-
-type FormItemContextValue = {
-  id: string
-}
-
-const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue
-)
 
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId()
 
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <IdContext.Provider value={id}>
       <div
         data-slot="form-item"
         className={cn("grid gap-2", className)}
         {...props}
       />
-    </FormItemContext.Provider>
+    </IdContext.Provider>
   )
 }
 
@@ -229,39 +93,40 @@ function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  const { error, formItemId } = useFormField()
+  const formItem = useFormItemContext()
 
   return (
     <Label
       data-slot="form-label"
-      data-error={!!error}
+      data-error={formItem.hasError}
       className={cn("data-[error=true]:text-destructive", className)}
-      htmlFor={formItemId}
+      htmlFor={formItem.formControlId}
       {...props}
     />
   )
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
-  const { error, formItemId, formDescriptionId, formMessageId } = useFormField()
+function FormControl(props: React.ComponentProps<typeof Slot>) {
+  const { formControlId, formDescriptionId, formMessageId, hasError } =
+    useFormItemContext()
+
+  const describedBy = hasError
+    ? `${formDescriptionId} ${formMessageId}`
+    : `${formDescriptionId}`
 
   return (
     <Slot
       data-slot="form-control"
-      id={formItemId}
-      aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
-      }
-      aria-invalid={!!error}
+      id={formControlId}
+      aria-describedby={describedBy}
+      aria-invalid={hasError}
       {...props}
     />
   )
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFormField()
+  const { formDescriptionId } = useFormItemContext()
 
   return (
     <p
@@ -274,8 +139,8 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 }
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
-  const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : props.children
+  const { error, formMessageId } = useFormItemContext()
+  const body = error ?? props.children
 
   if (!body) {
     return null
@@ -294,12 +159,14 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
 }
 
 export {
-  useFormField,
   Form,
   FormItem,
   FormLabel,
   FormControl,
   FormDescription,
   FormMessage,
-  FormField,
+  fieldContext,
+  useFieldContext,
+  formContext,
+  useFormContext,
 }

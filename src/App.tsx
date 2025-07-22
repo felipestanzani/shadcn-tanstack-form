@@ -1,8 +1,6 @@
 import { useState } from "react"
-import { useForm } from "@tanstack/react-form"
 import {
   Form,
-  FormField,
   FormItem,
   FormLabel,
   FormControl,
@@ -11,12 +9,13 @@ import {
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useAppForm } from "./hooks/form-hook"
 import ZodFormExample from "./ZodFormExample"
 
 export default function App() {
   const [showZodForm, setShowZodForm] = useState(false)
 
-  const form = useForm({
+  const form = useAppForm({
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -60,120 +59,114 @@ export default function App() {
         </Button>
       </div>
 
-      <Form
-        form={form}
-        onSubmit={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-          form.handleSubmit()
-        }}
-        className="space-y-4"
-      >
-        <FormField
-          name="firstName"
-          validators={{
-            onChange: ({ value }: { value: string }) =>
-              !value
-                ? "A first name is required"
-                : value.length < 2
-                  ? "First name must be at least 2 characters"
-                  : undefined,
-          }}
-        >
-          {(field) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your first name"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </FormControl>
-              <FormDescription>
-                This is your public display first name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        </FormField>
-
-        <FormField
-          name="lastName"
-          validators={{
-            onChange: ({ value }: { value: string }) =>
-              !value
-                ? "A last name is required"
-                : value.length < 2
-                  ? "Last name must be at least 2 characters"
-                  : undefined,
-          }}
-        >
-          {(field) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Enter your last name"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </FormControl>
-              <FormDescription>
-                This is your public display last name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        </FormField>
-
-        <FormField name="email">
-          {(field) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                />
-              </FormControl>
-              <FormDescription>
-                We'll never share your email with anyone else.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        </FormField>
-
-        <div className="pt-4">
-          <form.Subscribe
-            selector={(state) => [state.canSubmit, state.isSubmitting]}
+      <form.AppForm>
+        <Form className="space-y-4">
+          <form.AppField
+            name="firstName"
+            validators={{
+              onChange: ({ value }: { value: string }) =>
+                !value
+                  ? "A first name is required"
+                  : value.length < 2
+                    ? "First name must be at least 2 characters"
+                    : undefined,
+            }}
           >
-            {([canSubmit, isSubmitting]) => (
-              <div className="flex gap-2">
-                <Button type="submit" disabled={!canSubmit}>
-                  {isSubmitting ? "Submitting..." : "Submit"}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    form.reset()
-                  }}
-                >
-                  Reset
-                </Button>
-              </div>
+            {(field) => (
+              <FormItem>
+                <FormLabel>First Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your first name"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormDescription>
+                  This is your public display first name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
             )}
-          </form.Subscribe>
-        </div>
-      </Form>
+          </form.AppField>
+
+          <form.AppField
+            name="lastName"
+            validators={{
+              onChange: ({ value }: { value: string }) =>
+                !value
+                  ? "A last name is required"
+                  : value.length < 2
+                    ? "Last name must be at least 2 characters"
+                    : undefined,
+            }}
+          >
+            {(field) => (
+              <FormItem>
+                <FormLabel>Last Name</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter your last name"
+                    value={field.state.value}
+                    onBlur={field.handleBlur}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                  />
+                </FormControl>
+                <FormDescription>
+                  This is your public display last name.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          </form.AppField>
+
+          <form.AppField name="email">
+            {(field) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                  />
+                </FormControl>
+                <FormDescription>
+                  We'll never share your email with anyone else.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          </form.AppField>
+
+          <div className="pt-4">
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => (
+                <div className="flex gap-2">
+                  <Button type="submit" disabled={!canSubmit}>
+                    {isSubmitting ? "Submitting..." : "Submit"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      form.reset()
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </div>
+              )}
+            </form.Subscribe>
+          </div>
+        </Form>
+      </form.AppForm>
     </div>
   )
 }
