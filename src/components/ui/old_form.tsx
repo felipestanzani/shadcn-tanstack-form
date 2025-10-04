@@ -3,17 +3,9 @@
 import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
-import { createFormHookContexts, useStore } from "@tanstack/react-form"
 import { cn } from "@/lib/utils"
-
-// **NEW**: Import the new field components from shadcn/ui
-// Make sure the path is correct for your project structure.
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field"
+import { Label } from "@/components/ui/label"
+import { createFormHookContexts, useStore } from "@tanstack/react-form"
 
 const { useFieldContext, useFormContext, fieldContext, formContext } =
   createFormHookContexts()
@@ -43,7 +35,6 @@ function useFormItemContext() {
     throw new Error("Form Item components should be used within <FormItem>")
   }
 
-  // This logic remains the same, as it's the core of our context.
   const errors = useStore(field.store, (state) => state.meta.errors)
   const isTouched = useStore(field.store, (state) => state.meta.isTouched)
   const submissionAttempts = useStore(
@@ -53,41 +44,41 @@ function useFormItemContext() {
 
   const formItem = React.useMemo(() => {
     const showError = isTouched || submissionAttempts > 0
-    const hasError = showError && errors.length > 0
-    const errorMessage = hasError ? String(errors[0] ?? "") : null
+
+    let errorMessage: string | null = null
+    if (showError && errors.length > 0) {
+      const error = errors[0]
+
+      if (typeof error === "string") {
+        errorMessage = error
+      } else if (typeof error === "object" && error !== null) {
+        if ("message" in error && typeof error.message === "string") {
+          errorMessage = error.message
+        }
+      } else if (error !== null && error !== undefined) {
+        errorMessage = String(error)
+      }
+    }
 
     return {
       formControlId: `${idContext}-form-item`,
       formDescriptionId: `${idContext}-form-item-description`,
       formMessageId: `${idContext}-form-item-message`,
       error: errorMessage,
-      hasError,
+      hasError: showError && errorMessage !== null,
     }
   }, [idContext, isTouched, submissionAttempts, errors])
 
   return formItem
 }
 
-// MODIFIED: FormItem now renders the <Field> component
 function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   const id = React.useId()
-  // We need to consume the field context here to determine the invalid state
-  // for the root <Field> component, which controls the styles of its children.
-  const field = useFieldContext()
-  const errors = useStore(field.store, (state) => state.meta.errors)
-  const isTouched = useStore(field.store, (state) => state.meta.isTouched)
-  const submissionAttempts = useStore(
-    field.form.store,
-    (state) => state.submissionAttempts
-  )
-  const showError = isTouched || submissionAttempts > 0
-  const hasError = showError && errors.length > 0
 
   return (
     <IdContext.Provider value={id}>
-      <Field
+      <div
         data-slot="form-item"
-        data-invalid={hasError ? "true" : undefined}
         className={cn("grid gap-2", className)}
         {...props}
       />
@@ -95,28 +86,23 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-// MODIFIED: FormLabel now renders the <FieldLabel> component
 function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  const { formControlId } = useFormItemContext()
+  const formItem = useFormItemContext()
 
-  // The `data-error` attribute is no longer needed, as the parent <Field>
-  // component's `data-invalid` state will be used for styling.
   return (
-    <FieldLabel
+    <Label
       data-slot="form-label"
-      htmlFor={formControlId}
-      className={className}
+      data-error={formItem.hasError}
+      className={cn("data-[error=true]:text-destructive", className)}
+      htmlFor={formItem.formControlId}
       {...props}
     />
   )
 }
 
-// UNCHANGED: FormControl remains a Slot to inject props into the input.
-// This is crucial for preserving the DX and not having to manually add
-// aria-attributes to every input.
 function FormControl(props: React.ComponentProps<typeof Slot>) {
   const { formControlId, formDescriptionId, formMessageId, hasError } =
     useFormItemContext()
@@ -136,21 +122,19 @@ function FormControl(props: React.ComponentProps<typeof Slot>) {
   )
 }
 
-// MODIFIED: FormDescription now renders the <FieldDescription> component
 function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   const { formDescriptionId } = useFormItemContext()
 
   return (
-    <FieldDescription
+    <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={className}
+      className={cn("text-muted-foreground text-sm", className)}
       {...props}
     />
   )
 }
 
-// MODIFIED: FormMessage now renders the <FieldError> component
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormItemContext()
   const body = error ?? props.children
@@ -160,14 +144,14 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   }
 
   return (
-    <FieldError
+    <p
       data-slot="form-message"
       id={formMessageId}
-      className={className}
+      className={cn("text-destructive text-sm", className)}
       {...props}
     >
       {body}
-    </FieldError>
+    </p>
   )
 }
 
