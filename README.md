@@ -19,7 +19,7 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 1. **Install shadcn/ui** in your project first:
 
    ```bash
-   npx shadcn@latest init
+   pnpm dlx shadcn@latest init
    ```
 
 2. **Install TanStack Form**:
@@ -28,17 +28,23 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
    pnpm add @tanstack/react-form
    ```
 
-3. **Add the Form component** to your project:
+3. **Install Radix UI Slot**:
+
+   ```bash
+   pnpm add @radix-ui/react-slot
+   ```
+
+4. **Add the Form component** to your project:
 
    Copy the `form.tsx` file from this repository to your `components/ui/` folder.
 
-4. **Add the form-hook** to your project:
+5. **Add the form-hook** to your project:
 
    Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
 
-5. **Install additional shadcn/ui components** that you'll use with forms:
+6. **Install additional shadcn/ui components** that you'll use with forms:
    ```bash
-   npx shadcn@latest add button input label checkbox textarea
+   pnpm dlx shadcn@latest add field button input label checkbox textarea
    ```
 
 ### Prerequisites

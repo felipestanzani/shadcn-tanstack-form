@@ -1,11 +1,9 @@
 "use client"
 
 import * as React from "react"
-import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
 import { createFormHookContexts, useStore } from "@tanstack/react-form"
 import { cn } from "@/lib/utils"
-
 import {
   Field,
   FieldDescription,
@@ -105,7 +103,7 @@ function FormItem({ className, ...props }: React.ComponentProps<typeof Field>) {
 function FormLabel({
   className,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+}: React.ComponentProps<typeof FieldLabel>) {
   const { formControlId, hasError } = useFormItemContext()
 
   return (
@@ -138,7 +136,10 @@ function FormControl(props: React.ComponentProps<typeof Slot>) {
   )
 }
 
-function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
+function FormDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof FieldDescription>) {
   const { formDescriptionId } = useFormItemContext()
 
   return (
@@ -151,7 +152,10 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
   )
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
+function FormMessage({
+  className,
+  ...props
+}: React.ComponentProps<typeof FieldError>) {
   const { error, formMessageId } = useFormItemContext()
   const body = error ?? props.children
 
