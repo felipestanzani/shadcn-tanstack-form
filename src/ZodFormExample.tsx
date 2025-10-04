@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "./components/ui/input"
 import { Checkbox } from "./components/ui/checkbox"
 import { Textarea } from "./components/ui/textarea"
-import { useAppForm } from "./hooks/form-hook"
+import { useAppForm } from "@/hooks/form-hook"
 
 // Define Zod schema
 const userSchema = z.object({
