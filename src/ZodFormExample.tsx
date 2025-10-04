@@ -189,7 +189,7 @@ export default function ZodFormExample() {
 
           <form.AppField name="terms">
             {(field) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+              <FormItem orientation="horizontal">
                 <FormControl>
                   <Checkbox
                     checked={field.state.value}
