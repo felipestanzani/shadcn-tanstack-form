@@ -106,11 +106,12 @@ function FormLabel({
   className,
   ...props
 }: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  const { formControlId } = useFormItemContext()
+  const { formControlId, hasError } = useFormItemContext()
 
   return (
     <FieldLabel
       data-slot="form-label"
+      data-error={hasError ? "true" : undefined}
       htmlFor={formControlId}
       className={className}
       {...props}
@@ -122,15 +123,15 @@ function FormControl(props: React.ComponentProps<typeof Slot>) {
   const { formControlId, formDescriptionId, formMessageId, hasError } =
     useFormItemContext()
 
-  const describedBy = hasError
-    ? `${formDescriptionId} ${formMessageId}`
-    : `${formDescriptionId}`
+  const describedBy = [formDescriptionId, hasError ? formMessageId : null]
+    .filter(Boolean)
+    .join(" ")
 
   return (
     <Slot
       data-slot="form-control"
       id={formControlId}
-      aria-describedby={describedBy}
+      aria-describedby={describedBy || undefined}
       aria-invalid={hasError}
       {...props}
     />
@@ -165,7 +166,7 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       className={className}
       {...props}
     >
-      {JSON.stringify(body)}
+      {body}
     </FieldError>
   )
 }
