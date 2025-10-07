@@ -7,7 +7,7 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 - 🎯 **Type-safe forms** - Full TypeScript support with type inference
 - 🚀 **TanStack Form integration** - Leverages TanStack Form's powerful state management
 - 🎨 **shadcn/ui styling** - Beautiful, accessible components out of the box
-- ✅ **Zod validation** - Seamless integration with Zod v4 for schema validation
+- ✅ **Schema validation** - Seamless integration with schema validation libraries such as Zod V4
 - 🧪 **Comprehensive testing** - Includes test suite with testing utilities
 - 📱 **Responsive design** - Mobile-friendly form layouts
 - ♿ **Accessibility** - Built with accessibility best practices
@@ -60,11 +60,11 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
 import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -97,21 +97,21 @@ export default function SimpleForm() {
           }}
         >
           {(field) => (
-            <FormItem>
-              <FormLabel>First Name</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>First Name</FieldLabel>
+              <FieldControl>
                 <Input
                   placeholder="Enter your first name"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-              </FormControl>
-              <FormDescription>
+              </FieldControl>
+              <FieldDescription>
                 This is your public display first name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+              </FieldDescription>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
@@ -127,29 +127,29 @@ export default function SimpleForm() {
           }}
         >
           {(field) => (
-            <FormItem>
-              <FormLabel>Last Name</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>Last Name</FieldLabel>
+              <FieldControl>
                 <Input
                   placeholder="Enter your last name"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-              </FormControl>
-              <FormDescription>
+              </FieldControl>
+              <FieldDescription>
                 This is your public display last name.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+              </FieldDescription>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
         <form.AppField name="email">
           {(field) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>Email</FieldLabel>
+              <FieldControl>
                 <Input
                   type="email"
                   placeholder="Enter your email"
@@ -157,12 +157,12 @@ export default function SimpleForm() {
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                 />
-              </FormControl>
-              <FormDescription>
+              </FieldControl>
+              <FieldDescription>
                 We'll never share your email with anyone else.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
+              </FieldDescription>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
@@ -188,11 +188,11 @@ import { z } from "zod"
 import { useAppForm } from "@/hooks/form-hook"
 import {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -228,32 +228,32 @@ export default function ZodForm() {
       <Form className="space-y-6">
         <form.AppField name="firstName">
           {(field) => (
-            <FormItem>
-              <FormLabel>First Name *</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>First Name *</FieldLabel>
+              <FieldControl>
                 <Input
                   placeholder="Enter your first name"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </FieldControl>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
         <form.AppField name="terms">
           {(field) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormControl>
+            <Field className="flex items-center space-x-2">
+              <FieldControl>
                 <Checkbox
                   checked={field.state.value}
                   onCheckedChange={(checked) => field.handleChange(checked)}
                 />
-              </FormControl>
-              <FormLabel>Accept terms and conditions *</FormLabel>
-              <FormMessage />
-            </FormItem>
+              </FieldControl>
+              <FieldLabel>Accept terms and conditions *</FieldLabel>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
@@ -279,17 +279,16 @@ export default function ZodForm() {
 The integration provides the following components:
 
 - **`Form`** - The root form component that provides TanStack Form context
-- **`FormField`** - Wrapper around TanStack Form's `Field` component
-- **`FormItem`** - Container for form field elements with proper spacing
-- **`FormLabel`** - Accessible label component with proper associations
-- **`FormControl`** - Wrapper for form inputs with error state handling
-- **`FormDescription`** - Helper text component for additional field information
-- **`FormMessage`** - Error message component that displays validation errors
+- **`Field`** - Wrapper around shadcn `Field` component
+- **`FieldLabel`** - Accessible label component with proper associations
+- **`FieldControl`** - Wrapper for form inputs with error state handling
+- **`FieldDescription`** - Helper text component for additional field information
+- **`FieldError`** - Field error component that displays validation errors
 
 ### Key Features
 
 1. **Type Safety**: Full TypeScript integration with type inference from form schemas
-2. **Validation**: Support for both TanStack Form validators and Zod schema validation
+2. **Validation**: Support for both TanStack Form validators and schema validation
 3. **Error Handling**: Automatic error display with proper accessibility attributes
 4. **State Management**: Leverages TanStack Form's reactive state management
 5. **Accessibility**: Built-in ARIA attributes and proper form associations
@@ -331,10 +330,10 @@ import { useForm } from "@tanstack/react-form"
 import {
   Form,
   FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldError,
 } from "@/components/ui/form"
 
 const TestForm = () => {
@@ -357,16 +356,16 @@ const TestForm = () => {
     >
       <FormField name="name">
         {(field) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
-            <FormControl>
+          <Field>
+            <FieldLabel>Name</FieldLabel>
+            <FieldControl>
               <input
                 value={field.state.value}
                 onChange={(e) => field.handleChange(e.target.value)}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+            </FieldControl>
+            <FieldError />
+          </Field>
         )}
       </FormField>
     </Form>

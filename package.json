@@ -1,7 +1,7 @@
 {
   "name": "shadcn-tanstack-form",
   "private": false,
-  "version": "0.5.0-beta",
+  "version": "1.0.0",
   "type": "module",
   "author": "Felipe Cesar Stanzani Fonseca <stanzani@gmail.com>",
   "license": "MIT",

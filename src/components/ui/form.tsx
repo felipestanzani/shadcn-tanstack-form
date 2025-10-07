@@ -31,7 +31,7 @@ function useFieldComponentContext() {
   const idContext = React.useContext(IdContext)
 
   if (typeof idContext !== "string") {
-    throw new Error("Form Item components should be used within <Field>")
+    throw new Error("Form components should be used within <Field>")
   }
 
   const errors = useStore(field.store, (state) => state.meta.errors)
