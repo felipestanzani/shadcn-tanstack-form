@@ -4,12 +4,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { createFormHookContexts, useStore } from "@tanstack/react-form"
 import { cn } from "@/lib/utils"
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldLabel,
-} from "@/components/ui/field"
+import * as scn from "@/components/ui/field"
 
 const { useFieldContext, useFormContext, fieldContext, formContext } =
   createFormHookContexts()
@@ -31,12 +26,12 @@ function Form(props: React.ComponentProps<"form">) {
 
 const IdContext = React.createContext<string>(null as never)
 
-function useFormItemContext() {
+function useFieldComponentContext() {
   const field = useFieldContext()
   const idContext = React.useContext(IdContext)
 
   if (typeof idContext !== "string") {
-    throw new Error("Form Item components should be used within <FormItem>")
+    throw new Error("Form Item components should be used within <Field>")
   }
 
   const errors = useStore(field.store, (state) => state.meta.errors)
@@ -46,7 +41,7 @@ function useFormItemContext() {
     (state) => state.submissionAttempts
   )
 
-  const formItem = React.useMemo(() => {
+  const fieldComponent = React.useMemo(() => {
     const showError = isTouched || submissionAttempts > 0
 
     let errorMessage: string | null = null
@@ -73,10 +68,13 @@ function useFormItemContext() {
     }
   }, [idContext, isTouched, submissionAttempts, errors])
 
-  return formItem
+  return fieldComponent
 }
 
-function FormItem({ className, ...props }: React.ComponentProps<typeof Field>) {
+function Field({
+  className,
+  ...props
+}: React.ComponentProps<typeof scn.Field>) {
   const id = React.useId()
   const field = useFieldContext()
   const errors = useStore(field.store, (state) => state.meta.errors)
@@ -90,7 +88,7 @@ function FormItem({ className, ...props }: React.ComponentProps<typeof Field>) {
 
   return (
     <IdContext.Provider value={id}>
-      <Field
+      <scn.Field
         data-slot="form-item"
         data-invalid={hasError ? "true" : undefined}
         className={cn("grid gap-2", className)}
@@ -100,14 +98,14 @@ function FormItem({ className, ...props }: React.ComponentProps<typeof Field>) {
   )
 }
 
-function FormLabel({
+function FieldLabel({
   className,
   ...props
-}: React.ComponentProps<typeof FieldLabel>) {
-  const { formControlId, hasError } = useFormItemContext()
+}: React.ComponentProps<typeof scn.FieldLabel>) {
+  const { formControlId, hasError } = useFieldComponentContext()
 
   return (
-    <FieldLabel
+    <scn.FieldLabel
       data-slot="form-label"
       data-error={hasError ? "true" : undefined}
       htmlFor={formControlId}
@@ -117,9 +115,9 @@ function FormLabel({
   )
 }
 
-function FormControl(props: React.ComponentProps<typeof Slot>) {
+function FieldControl(props: React.ComponentProps<typeof Slot>) {
   const { formControlId, formDescriptionId, formMessageId, hasError } =
-    useFormItemContext()
+    useFieldComponentContext()
 
   const describedBy = [formDescriptionId, hasError ? formMessageId : null]
     .filter(Boolean)
@@ -136,14 +134,14 @@ function FormControl(props: React.ComponentProps<typeof Slot>) {
   )
 }
 
-function FormDescription({
+function FieldDescription({
   className,
   ...props
-}: React.ComponentProps<typeof FieldDescription>) {
-  const { formDescriptionId } = useFormItemContext()
+}: React.ComponentProps<typeof scn.FieldDescription>) {
+  const { formDescriptionId } = useFieldComponentContext()
 
   return (
-    <FieldDescription
+    <scn.FieldDescription
       data-slot="form-description"
       id={formDescriptionId}
       className={className}
@@ -152,11 +150,11 @@ function FormDescription({
   )
 }
 
-function FormMessage({
+function FieldError({
   className,
   ...props
-}: React.ComponentProps<typeof FieldError>) {
-  const { error, formMessageId } = useFormItemContext()
+}: React.ComponentProps<typeof scn.FieldError>) {
+  const { error, formMessageId } = useFieldComponentContext()
   const body = error ?? props.children
 
   if (!body) {
@@ -164,24 +162,24 @@ function FormMessage({
   }
 
   return (
-    <FieldError
+    <scn.FieldError
       data-slot="form-message"
       id={formMessageId}
       className={className}
       {...props}
     >
       {body}
-    </FieldError>
+    </scn.FieldError>
   )
 }
 
 export {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
   fieldContext,
   useFieldContext,
   formContext,

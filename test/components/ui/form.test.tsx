@@ -4,11 +4,11 @@ import userEvent from "@testing-library/user-event"
 import { z } from "zod"
 import {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -47,26 +47,26 @@ const TestFormComponent = ({
       <Form data-testid="test-form">
         <form.AppField name="name">
           {(field) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>Name</FieldLabel>
+              <FieldControl>
                 <Input
                   data-testid="name-input"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </FieldControl>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
         <form.AppField name="email">
           {(field) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>Email</FieldLabel>
+              <FieldControl>
                 <Input
                   data-testid="email-input"
                   type="email"
@@ -74,18 +74,18 @@ const TestFormComponent = ({
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                 />
-              </FormControl>
-              <FormDescription>Enter your email address</FormDescription>
-              <FormMessage />
-            </FormItem>
+              </FieldControl>
+              <FieldDescription>Enter your email address</FieldDescription>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
         <form.AppField name="age">
           {(field) => (
-            <FormItem>
-              <FormLabel>Age</FormLabel>
-              <FormControl>
+            <Field>
+              <FieldLabel>Age</FieldLabel>
+              <FieldControl>
                 <Input
                   data-testid="age-input"
                   type="number"
@@ -93,9 +93,9 @@ const TestFormComponent = ({
                   onChange={(e) => field.handleChange(Number(e.target.value))}
                   onBlur={field.handleBlur}
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              </FieldControl>
+              <FieldError />
+            </Field>
           )}
         </form.AppField>
 
@@ -156,8 +156,8 @@ describe("Form Components", () => {
 
   it("renders with proper className", () => {
     render(<TestFormComponent />)
-    const formItems = document.querySelectorAll('[data-slot="form-item"]')
-    expect(formItems.length).toBeGreaterThan(0)
+    const Fields = document.querySelectorAll('[data-slot="form-item"]')
+    expect(Fields.length).toBeGreaterThan(0)
   })
 
   it("renders label with proper text", () => {
@@ -366,10 +366,10 @@ describe("Form Components", () => {
 })
 
 describe("Form edge cases", () => {
-  it("throws if FormLabel is used outside FormItem", () => {
+  it("throws if FieldLabel is used outside Field", () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {})
     expect(() => {
-      render(<FormLabel>Name</FormLabel>)
+      render(<FieldLabel>Name</FieldLabel>)
     }).toThrow(
       "`fieldContext` only works when within a `fieldComponent` passed to `createFormHook`"
     )
@@ -389,9 +389,9 @@ describe("Form edge cases", () => {
           <Form>
             <form.AppField name="foo">
               {() => (
-                <FormItem>
-                  <FormMessage>Child message</FormMessage>
-                </FormItem>
+                <Field>
+                  <FieldError>Child message</FieldError>
+                </Field>
               )}
             </form.AppField>
           </Form>

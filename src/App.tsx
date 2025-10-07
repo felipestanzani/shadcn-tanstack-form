@@ -1,11 +1,11 @@
 import { useState } from "react"
 import {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -73,21 +73,21 @@ export default function App() {
             }}
           >
             {(field) => (
-              <FormItem>
-                <FormLabel>First Name</FormLabel>
-                <FormControl>
+              <Field>
+                <FieldLabel>First Name</FieldLabel>
+                <FieldControl>
                   <Input
                     placeholder="Enter your first name"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FormControl>
-                <FormDescription>
+                </FieldControl>
+                <FieldDescription>
                   This is your public display first name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+                </FieldDescription>
+                <FieldError />
+              </Field>
             )}
           </form.AppField>
 
@@ -103,29 +103,29 @@ export default function App() {
             }}
           >
             {(field) => (
-              <FormItem>
-                <FormLabel>Last Name</FormLabel>
-                <FormControl>
+              <Field>
+                <FieldLabel>Last Name</FieldLabel>
+                <FieldControl>
                   <Input
                     placeholder="Enter your last name"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FormControl>
-                <FormDescription>
+                </FieldControl>
+                <FieldDescription>
                   This is your public display last name.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+                </FieldDescription>
+                <FieldError />
+              </Field>
             )}
           </form.AppField>
 
           <form.AppField name="email">
             {(field) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
+              <Field>
+                <FieldLabel>Email</FieldLabel>
+                <FieldControl>
                   <Input
                     type="email"
                     placeholder="Enter your email"
@@ -133,12 +133,12 @@ export default function App() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
                   />
-                </FormControl>
-                <FormDescription>
+                </FieldControl>
+                <FieldDescription>
                   We'll never share your email with anyone else.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+                </FieldDescription>
+                <FieldError />
+              </Field>
             )}
           </form.AppField>
 
