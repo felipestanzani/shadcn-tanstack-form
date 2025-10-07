@@ -1,17 +1,17 @@
 import { z } from "zod"
 import {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
 } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "./components/ui/input"
 import { Checkbox } from "./components/ui/checkbox"
 import { Textarea } from "./components/ui/textarea"
-import { useAppForm } from "./hooks/form-hook"
+import { useAppForm } from "@/hooks/form-hook"
 
 // Define Zod schema
 const userSchema = z.object({
@@ -73,63 +73,63 @@ export default function ZodFormExample() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <form.AppField name="firstName">
               {(field) => (
-                <FormItem>
-                  <FormLabel>First Name *</FormLabel>
-                  <FormControl>
+                <Field>
+                  <FieldLabel>First Name *</FieldLabel>
+                  <FieldControl>
                     <Input
                       placeholder="Enter your first name"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </FieldControl>
+                  <FieldError />
+                </Field>
               )}
             </form.AppField>
 
             <form.AppField name="lastName">
               {(field) => (
-                <FormItem>
-                  <FormLabel>Last Name *</FormLabel>
-                  <FormControl>
+                <Field>
+                  <FieldLabel>Last Name *</FieldLabel>
+                  <FieldControl>
                     <Input
                       placeholder="Enter your last name"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+                  </FieldControl>
+                  <FieldError />
+                </Field>
               )}
             </form.AppField>
           </div>
 
           <form.AppField name="email">
             {(field) => (
-              <FormItem>
-                <FormLabel>Email Address *</FormLabel>
-                <FormControl>
+              <Field>
+                <FieldLabel>Email Address *</FieldLabel>
+                <FieldControl>
                   <Input
                     type="email"
                     placeholder="Enter your email address"
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FormControl>
-                <FormDescription>
+                </FieldControl>
+                <FieldDescription>
                   We'll never share your email with anyone else.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+                </FieldDescription>
+                <FieldError />
+              </Field>
             )}
           </form.AppField>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <form.AppField name="age">
               {(field) => (
-                <FormItem>
-                  <FormLabel>Age *</FormLabel>
-                  <FormControl>
+                <Field>
+                  <FieldLabel>Age *</FieldLabel>
+                  <FieldControl>
                     <Input
                       type="number"
                       placeholder="Enter your age"
@@ -138,59 +138,62 @@ export default function ZodFormExample() {
                         field.handleChange(Number(e.target.value))
                       }
                     />
-                  </FormControl>
-                  <FormDescription>
+                  </FieldControl>
+                  <FieldDescription>
                     Must be 18 or older to register.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
+                  </FieldDescription>
+                  <FieldError />
+                </Field>
               )}
             </form.AppField>
 
             <form.AppField name="website">
               {(field) => (
-                <FormItem>
-                  <FormLabel>Website (Optional)</FormLabel>
-                  <FormControl>
+                <Field>
+                  <FieldLabel>Website (Optional)</FieldLabel>
+                  <FieldControl>
                     <Input
                       type="url"
                       placeholder="https://your-website.com"
                       value={field.state.value}
                       onChange={(e) => field.handleChange(e.target.value)}
                     />
-                  </FormControl>
-                  <FormDescription>
+                  </FieldControl>
+                  <FieldDescription>
                     Your personal or professional website.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
+                  </FieldDescription>
+                  <FieldError />
+                </Field>
               )}
             </form.AppField>
           </div>
 
           <form.AppField name="bio">
             {(field) => (
-              <FormItem>
-                <FormLabel>Bio (Optional)</FormLabel>
-                <FormControl>
+              <Field>
+                <FieldLabel>Bio (Optional)</FieldLabel>
+                <FieldControl>
                   <Textarea
                     placeholder="Tell us about yourself..."
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FormControl>
-                <FormDescription>
+                </FieldControl>
+                <FieldDescription>
                   Brief description about yourself (max 500 characters).
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
+                </FieldDescription>
+                <FieldError />
+              </Field>
             )}
           </form.AppField>
 
           <form.AppField name="terms">
             {(field) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                <FormControl>
+              <Field
+                orientation="horizontal"
+                className="flex flex-row items-start space-x-3 space-y-0"
+              >
+                <FieldControl>
                   <Checkbox
                     checked={field.state.value}
                     // 'indeterminate' is coerced to false
@@ -198,15 +201,15 @@ export default function ZodFormExample() {
                       field.handleChange(checked === true)
                     }
                   />
-                </FormControl>
+                </FieldControl>
                 <div className="space-y-1 leading-none">
-                  <FormLabel>Accept terms and conditions *</FormLabel>
-                  <FormDescription>
+                  <FieldLabel>Accept terms and conditions *</FieldLabel>
+                  <FieldDescription>
                     You agree to our Terms of Service and Privacy Policy.
-                  </FormDescription>
-                  <FormMessage />
+                  </FieldDescription>
+                  <FieldError />
                 </div>
-              </FormItem>
+              </Field>
             )}
           </form.AppField>
 

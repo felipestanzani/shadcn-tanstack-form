@@ -1,7 +1,7 @@
 {
   "name": "shadcn-tanstack-form",
   "private": false,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "author": "Felipe Cesar Stanzani Fonseca <stanzani@gmail.com>",
   "license": "MIT",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.3.2",
     "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-separator": "^1.1.7",
     "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-form": "^1.14.1",

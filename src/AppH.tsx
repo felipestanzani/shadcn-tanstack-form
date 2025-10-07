@@ -1,18 +1,11 @@
 import { useState } from "react"
-import {
-  Form,
-  Field,
-  FieldLabel,
-  FieldControl,
-  FieldDescription,
-  FieldError,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAppForm } from "./hooks/form-hook"
 import ZodFormExample from "./ZodFormExample"
 
-export default function App() {
+export default function AppH() {
   const [showZodForm, setShowZodForm] = useState(false)
 
   const form = useAppForm({
@@ -73,21 +66,21 @@ export default function App() {
             }}
           >
             {(field) => (
-              <Field>
-                <FieldLabel>First Name</FieldLabel>
-                <FieldControl>
+              <field.Field>
+                <field.Label>First Name</field.Label>
+                <field.Control>
                   <Input
                     placeholder="Enter your first name"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FieldControl>
-                <FieldDescription>
+                </field.Control>
+                <field.Description>
                   This is your public display first name.
-                </FieldDescription>
-                <FieldError />
-              </Field>
+                </field.Description>
+                <field.Error />
+              </field.Field>
             )}
           </form.AppField>
 
@@ -103,29 +96,29 @@ export default function App() {
             }}
           >
             {(field) => (
-              <Field>
-                <FieldLabel>Last Name</FieldLabel>
-                <FieldControl>
+              <field.Field>
+                <field.Label>Last Name</field.Label>
+                <field.Control>
                   <Input
                     placeholder="Enter your last name"
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) => field.handleChange(e.target.value)}
                   />
-                </FieldControl>
-                <FieldDescription>
+                </field.Control>
+                <field.Description>
                   This is your public display last name.
-                </FieldDescription>
-                <FieldError />
-              </Field>
+                </field.Description>
+                <field.Error />
+              </field.Field>
             )}
           </form.AppField>
 
           <form.AppField name="email">
             {(field) => (
-              <Field>
-                <FieldLabel>Email</FieldLabel>
-                <FieldControl>
+              <field.Field>
+                <field.Label>Email</field.Label>
+                <field.Control>
                   <Input
                     type="email"
                     placeholder="Enter your email"
@@ -133,12 +126,12 @@ export default function App() {
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
                   />
-                </FieldControl>
-                <FieldDescription>
+                </field.Control>
+                <field.Description>
                   We'll never share your email with anyone else.
-                </FieldDescription>
-                <FieldError />
-              </Field>
+                </field.Description>
+                <field.Error />
+              </field.Field>
             )}
           </form.AppField>
 

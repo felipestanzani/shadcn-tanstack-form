@@ -2,14 +2,7 @@
 import { render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { z } from "zod"
-import {
-  Form,
-  Field,
-  FieldLabel,
-  FieldControl,
-  FieldDescription,
-  FieldError,
-} from "@/components/ui/form"
+import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useAppForm } from "@/hooks/form-hook"
@@ -47,26 +40,26 @@ const TestFormComponent = ({
       <Form data-testid="test-form">
         <form.AppField name="name">
           {(field) => (
-            <Field>
-              <FieldLabel>Name</FieldLabel>
-              <FieldControl>
+            <field.Field>
+              <field.Label>Name</field.Label>
+              <field.Control>
                 <Input
                   data-testid="name-input"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                 />
-              </FieldControl>
-              <FieldError />
-            </Field>
+              </field.Control>
+              <field.Error />
+            </field.Field>
           )}
         </form.AppField>
 
         <form.AppField name="email">
           {(field) => (
-            <Field>
-              <FieldLabel>Email</FieldLabel>
-              <FieldControl>
+            <field.Field>
+              <field.Label>Email</field.Label>
+              <field.Control>
                 <Input
                   data-testid="email-input"
                   type="email"
@@ -74,18 +67,18 @@ const TestFormComponent = ({
                   onChange={(e) => field.handleChange(e.target.value)}
                   onBlur={field.handleBlur}
                 />
-              </FieldControl>
-              <FieldDescription>Enter your email address</FieldDescription>
-              <FieldError />
-            </Field>
+              </field.Control>
+              <field.Description>Enter your email address</field.Description>
+              <field.Error />
+            </field.Field>
           )}
         </form.AppField>
 
         <form.AppField name="age">
           {(field) => (
-            <Field>
-              <FieldLabel>Age</FieldLabel>
-              <FieldControl>
+            <field.Field>
+              <field.Label>Age</field.Label>
+              <field.Control>
                 <Input
                   data-testid="age-input"
                   type="number"
@@ -93,9 +86,9 @@ const TestFormComponent = ({
                   onChange={(e) => field.handleChange(Number(e.target.value))}
                   onBlur={field.handleBlur}
                 />
-              </FieldControl>
-              <FieldError />
-            </Field>
+              </field.Control>
+              <field.Error />
+            </field.Field>
           )}
         </form.AppField>
 
@@ -365,17 +358,7 @@ describe("Form Components", () => {
   })
 })
 
-describe("Form edge cases", () => {
-  it("throws if FieldLabel is used outside Field", () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {})
-    expect(() => {
-      render(<FieldLabel>Name</FieldLabel>)
-    }).toThrow(
-      "`fieldContext` only works when within a `fieldComponent` passed to `createFormHook`"
-    )
-    spy.mockRestore()
-  })
-
+describe("Form hierarchy edge cases", () => {
   it("renders children if no error is present", async () => {
     function ChildrenMessageForm() {
       const form = useAppForm({
@@ -388,10 +371,10 @@ describe("Form edge cases", () => {
         <form.AppForm>
           <Form>
             <form.AppField name="foo">
-              {() => (
-                <Field>
-                  <FieldError>Child message</FieldError>
-                </Field>
+              {(field) => (
+                <field.Field>
+                  <field.Error>Child message</field.Error>
+                </field.Field>
               )}
             </form.AppField>
           </Form>

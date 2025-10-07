@@ -1,11 +1,10 @@
 "use client"
 
 import * as React from "react"
-import * as LabelPrimitive from "@radix-ui/react-label"
 import { Slot } from "@radix-ui/react-slot"
-import { cn } from "@/lib/utils"
-import { Label } from "@/components/ui/label"
 import { createFormHookContexts, useStore } from "@tanstack/react-form"
+import { cn } from "@/lib/utils"
+import * as scn from "@/components/ui/field"
 
 const { useFieldContext, useFormContext, fieldContext, formContext } =
   createFormHookContexts()
@@ -27,12 +26,12 @@ function Form(props: React.ComponentProps<"form">) {
 
 const IdContext = React.createContext<string>(null as never)
 
-function useFormItemContext() {
+function useFieldComponentContext() {
   const field = useFieldContext()
   const idContext = React.useContext(IdContext)
 
   if (typeof idContext !== "string") {
-    throw new Error("Form Item components should be used within <FormItem>")
+    throw new Error("Form components should be used within <Field>")
   }
 
   const errors = useStore(field.store, (state) => state.meta.errors)
@@ -42,7 +41,7 @@ function useFormItemContext() {
     (state) => state.submissionAttempts
   )
 
-  const formItem = React.useMemo(() => {
+  const fieldComponent = React.useMemo(() => {
     const showError = isTouched || submissionAttempts > 0
 
     let errorMessage: string | null = null
@@ -69,16 +68,29 @@ function useFormItemContext() {
     }
   }, [idContext, isTouched, submissionAttempts, errors])
 
-  return formItem
+  return fieldComponent
 }
 
-function FormItem({ className, ...props }: React.ComponentProps<"div">) {
+function Field({
+  className,
+  ...props
+}: React.ComponentProps<typeof scn.Field>) {
   const id = React.useId()
+  const field = useFieldContext()
+  const errors = useStore(field.store, (state) => state.meta.errors)
+  const isTouched = useStore(field.store, (state) => state.meta.isTouched)
+  const submissionAttempts = useStore(
+    field.form.store,
+    (state) => state.submissionAttempts
+  )
+  const showError = isTouched || submissionAttempts > 0
+  const hasError = showError && errors.length > 0
 
   return (
     <IdContext.Provider value={id}>
-      <div
+      <scn.Field
         data-slot="form-item"
+        data-invalid={hasError ? "true" : undefined}
         className={cn("grid gap-2", className)}
         {...props}
       />
@@ -86,57 +98,63 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function FormLabel({
+function FieldLabel({
   className,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root>) {
-  const formItem = useFormItemContext()
+}: React.ComponentProps<typeof scn.FieldLabel>) {
+  const { formControlId, hasError } = useFieldComponentContext()
 
   return (
-    <Label
+    <scn.FieldLabel
       data-slot="form-label"
-      data-error={formItem.hasError}
-      className={cn("data-[error=true]:text-destructive", className)}
-      htmlFor={formItem.formControlId}
+      data-error={hasError ? "true" : undefined}
+      htmlFor={formControlId}
+      className={className}
       {...props}
     />
   )
 }
 
-function FormControl(props: React.ComponentProps<typeof Slot>) {
+function FieldControl(props: React.ComponentProps<typeof Slot>) {
   const { formControlId, formDescriptionId, formMessageId, hasError } =
-    useFormItemContext()
+    useFieldComponentContext()
 
-  const describedBy = hasError
-    ? `${formDescriptionId} ${formMessageId}`
-    : `${formDescriptionId}`
+  const describedBy = [formDescriptionId, hasError ? formMessageId : null]
+    .filter(Boolean)
+    .join(" ")
 
   return (
     <Slot
       data-slot="form-control"
       id={formControlId}
-      aria-describedby={describedBy}
+      aria-describedby={describedBy || undefined}
       aria-invalid={hasError}
       {...props}
     />
   )
 }
 
-function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
-  const { formDescriptionId } = useFormItemContext()
+function FieldDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof scn.FieldDescription>) {
+  const { formDescriptionId } = useFieldComponentContext()
 
   return (
-    <p
+    <scn.FieldDescription
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("text-muted-foreground text-sm", className)}
+      className={className}
       {...props}
     />
   )
 }
 
-function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
-  const { error, formMessageId } = useFormItemContext()
+function FieldError({
+  className,
+  ...props
+}: React.ComponentProps<typeof scn.FieldError>) {
+  const { error, formMessageId } = useFieldComponentContext()
   const body = error ?? props.children
 
   if (!body) {
@@ -144,24 +162,24 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   }
 
   return (
-    <p
+    <scn.FieldError
       data-slot="form-message"
       id={formMessageId}
-      className={cn("text-destructive text-sm", className)}
+      className={className}
       {...props}
     >
       {body}
-    </p>
+    </scn.FieldError>
   )
 }
 
 export {
   Form,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormDescription,
-  FormMessage,
+  Field,
+  FieldLabel,
+  FieldControl,
+  FieldDescription,
+  FieldError,
   fieldContext,
   useFieldContext,
   formContext,
