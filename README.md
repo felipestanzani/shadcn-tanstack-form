@@ -73,8 +73,6 @@ export default function SimpleForm() {
   const form = useAppForm({
     defaultValues: {
       firstName: "",
-      lastName: "",
-      email: "",
     },
     onSubmit: async ({ value }) => {
       console.log("Form submitted:", value)
@@ -109,57 +107,6 @@ export default function SimpleForm() {
               </FieldControl>
               <FieldDescription>
                 This is your public display first name.
-              </FieldDescription>
-              <FieldError />
-            </Field>
-          )}
-        </form.AppField>
-
-        <form.AppField
-          name="lastName"
-          validators={{
-            onChange: ({ value }: { value: string }) =>
-              !value
-                ? "A last name is required"
-                : value.length < 2
-                  ? "Last name must be at least 2 characters"
-                  : undefined,
-          }}
-        >
-          {(field) => (
-            <Field>
-              <FieldLabel>Last Name</FieldLabel>
-              <FieldControl>
-                <Input
-                  placeholder="Enter your last name"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-              </FieldControl>
-              <FieldDescription>
-                This is your public display last name.
-              </FieldDescription>
-              <FieldError />
-            </Field>
-          )}
-        </form.AppField>
-
-        <form.AppField name="email">
-          {(field) => (
-            <Field>
-              <FieldLabel>Email</FieldLabel>
-              <FieldControl>
-                <Input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                />
-              </FieldControl>
-              <FieldDescription>
-                We'll never share your email with anyone else.
               </FieldDescription>
               <FieldError />
             </Field>
@@ -272,6 +219,72 @@ export default function ZodForm() {
 }
 ```
 
+### Using Field Hierarchy
+
+The developer can optionally use the components from the field object hierarchy. This way, if needed, the "pure" shadcn components can be used without "clashing" with Form components.
+
+```tsx
+import { useAppForm } from "@/hooks/form-hook"
+import { Form } from "@/components/ui/form" /* No need to import other Form components */
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+
+export default function SimpleForm() {
+  const form = useAppForm({
+    defaultValues: {
+      firstName: "",
+    },
+    onSubmit: async ({ value }) => {
+      console.log("Form submitted:", value)
+      alert(`Hello ${value.firstName} ${value.lastName}!`)
+    },
+  })
+
+  return (
+    <form.AppForm>
+      <Form className="space-y-4">
+        <form.AppField name="firstName">
+          {(field) => (
+            <field.Field>
+              <field.Label>First Name</field.Label>
+              <field.Control>
+                <Input
+                  placeholder="Enter your first name"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+              </field.Control>
+              <field.Description>
+                This is your public display first name.
+              </field.Description>
+              <field.Error />
+            </field.Field>
+          )}
+        </form.AppField>
+```
+
+## 🔄 Migration to 1.0.0
+
+Follow these steps to migrate from previous versions to 1.0.0:
+
+1. Update component names in your JSX to align with the new shadcn Field naming:
+   - `FormItem` → `Field`
+   - `FormLabel` → `FieldLabel`
+   - `FormControl` → `FieldControl`
+   - `FormDescription` → `FieldDescription`
+   - `FormMessage` → `FieldError`
+
+2. Keep imports the same for the new API:
+   - Components: import from `@/components/ui/form`
+   - Hook: import from `@/hooks/form-hook`
+
+3. Ensure shadcn Field is installed (if not already):
+
+   ```bash
+   pnpm dlx shadcn@latest add field
+   ```
+
 ## 🏗️ Architecture
 
 ### Form Components
@@ -321,72 +334,6 @@ The project includes comprehensive tests covering:
 - Accessibility features
 - Type safety
 
-### Example Test
-
-```tsx
-import { render, screen, waitFor } from "@testing-library/react"
-import userEvent from "@testing-library/user-event"
-import { useForm } from "@tanstack/react-form"
-import {
-  Form,
-  FormField,
-  Field,
-  FieldLabel,
-  FieldControl,
-  FieldError,
-} from "@/components/ui/form"
-
-const TestForm = () => {
-  const form = useForm({
-    defaultValues: { name: "" },
-    validators: {
-      onChange: z.object({
-        name: z.string().min(2, "Name must be at least 2 characters"),
-      }),
-    },
-  })
-
-  return (
-    <Form
-      form={form}
-      onSubmit={(e) => {
-        e.preventDefault()
-        form.handleSubmit()
-      }}
-    >
-      <FormField name="name">
-        {(field) => (
-          <Field>
-            <FieldLabel>Name</FieldLabel>
-            <FieldControl>
-              <input
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-              />
-            </FieldControl>
-            <FieldError />
-          </Field>
-        )}
-      </FormField>
-    </Form>
-  )
-}
-
-test("validates field on change", async () => {
-  const user = userEvent.setup()
-  render(<TestForm />)
-
-  const input = screen.getByRole("textbox")
-  await user.type(input, "J")
-
-  await waitFor(() => {
-    expect(
-      screen.getByText("Name must be at least 2 characters")
-    ).toBeInTheDocument()
-  })
-})
-```
-
 ## 📝 Available Scripts
 
 ```bash
@@ -430,6 +377,10 @@ pnpm test -- --coverage # Run tests with coverage
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
+
+## 📦 Changelog
+
+See the release notes: [CHANGELOG](CHANGELOG.md).
 
 ## 📄 License
 
