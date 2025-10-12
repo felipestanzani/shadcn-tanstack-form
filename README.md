@@ -264,6 +264,38 @@ export default function SimpleForm() {
         </form.AppField>
 ```
 
+### Note for specific shadcn/ui components
+
+There are some shadcn components such as `<RadioGroup>` where the `<FieldLabel>` is used outside of a `<Field>` component.
+In this case, you can import the original shadcn `<FieldLabel>`:
+
+```typescript
+import { FieldDescription as Description } from "./components/ui/field"
+```
+
+Or, import our wrapped `<FieldLabel>` using an alias:
+
+```typescript
+import { FieldDescription as Description } from "./components/ui/field"
+```
+
+Or else, import the `<FieldDescription>` from shadcn and use ours in the **field hierarchy**:
+
+```typescript
+import { FieldDescription } from "./components/ui/field"
+
+<form.AppForm>
+  <Form className="space-y-4">
+    <form.AppField name="firstName">
+      {(field) => (
+        <field.Field>
+          <field.Description>First Name</field.Description>
+        </field.Field>
+      )}
+```
+
+Both cases will work flawlessly. The only "drawback" of not using our `<FieldDescription>` if you prefer, is that the rendered HTML element won't receive an id automatically.
+
 ## 🔄 Migration to 1.0.0
 
 Follow these steps to migrate from previous versions to 1.0.0:

@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2025-10-1
+
+### Fixed
+
+- **Small issue related to `<Field>` css className**: The field was adding a Tailwind class to the field making the layout broken on some components such as Radio Groups.
+
+### Added
+
+- **`<RadioGroup>` usage example**: The `<RadioGroup>` component is composed by many `<Field>` components. In this case the `<FieldLabel>` is placed outside a `<Field>`, where a context does not exist. We added some example on how to use it correctly.
+
 ## [1.0.0] - 2025-10-07
 
 ### Added
