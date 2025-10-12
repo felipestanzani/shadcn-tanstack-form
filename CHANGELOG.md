@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **`<RadioGroup>` usage example**: The `<RadioGroup>` component is composed by many `<Field>` components. In this case the `<FieldLabel>` is placed outside a `<Field>`, where a context does not exist. We added some example on how to use it correctly.
+- **`<RadioGroup>` usage example**: The `<RadioGroup>` component is composed by many `<Field>` components. In this case the `<FieldDescription>` is placed outside a `<Field>`, where a context does not exist. We added some example on how to use it correctly.
 
 ## [1.0.0] - 2025-10-07
 

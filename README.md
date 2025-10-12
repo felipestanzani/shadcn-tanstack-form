@@ -266,14 +266,14 @@ export default function SimpleForm() {
 
 ### Note for specific shadcn/ui components
 
-There are some shadcn components such as `<RadioGroup>` where the `<FieldLabel>` is used outside of a `<Field>` component.
-In this case, you can import the original shadcn `<FieldLabel>`:
+There are some shadcn components such as `<RadioGroup>` where the `<FieldDescription>` is used outside of a `<Field>` component.
+In this case, you can import the original shadcn `<FieldDescription>`:
 
 ```typescript
 import { FieldDescription as Description } from "./components/ui/field"
 ```
 
-Or, import our wrapped `<FieldLabel>` using an alias:
+Or, import our wrapped `<FieldDescription>` using an alias:
 
 ```typescript
 import { FieldDescription as Description } from "./components/ui/field"
