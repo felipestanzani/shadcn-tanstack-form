@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { createFormHookContexts, useStore } from "@tanstack/react-form"
-import { cn } from "@/lib/utils"
 import * as scn from "@/components/ui/field"
 
 const { useFieldContext, useFormContext, fieldContext, formContext } =
@@ -91,7 +90,7 @@ function Field({
       <scn.Field
         data-slot="form-item"
         data-invalid={hasError ? "true" : undefined}
-        className={cn("grid gap-2", className)}
+        className={className}
         {...props}
       />
     </IdContext.Provider>

@@ -11,6 +11,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useAppForm } from "./hooks/form-hook"
 import ZodFormExample from "./ZodFormExample"
+import { RadioGroup, RadioGroupItem } from "./components/ui/radio-group"
+import {
+  FieldLegend,
+  FieldDescription as Description,
+} from "./components/ui/field"
 
 export default function App() {
   const [showZodForm, setShowZodForm] = useState(false)
@@ -20,6 +25,7 @@ export default function App() {
       firstName: "",
       lastName: "",
       email: "",
+      radio: "",
     },
     onSubmit: async ({ value }) => {
       // Do something with form data
@@ -142,6 +148,51 @@ export default function App() {
             )}
           </form.AppField>
 
+          <form.AppField
+            name="radio"
+            validators={{
+              onChange: ({ value }: { value: string }) =>
+                !value ? "A value name is required" : undefined,
+            }}
+          >
+            {(field) => (
+              <>
+                <FieldLegend>Plan</FieldLegend>
+                <Description>
+                  You can upgrade or downgrade your plan at any time.
+                </Description>
+                <RadioGroup
+                  name={field.name}
+                  value={field.state.value}
+                  onValueChange={field.handleChange}
+                  defaultValue="monthly"
+                >
+                  <Field orientation="horizontal">
+                    <RadioGroupItem value="monthly" id="plan-monthly" />
+                    <FieldLabel htmlFor="plan-monthly" className="font-normal">
+                      Monthly ($9.99/month)
+                    </FieldLabel>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <RadioGroupItem value="yearly" id="plan-yearly" />
+                    <FieldLabel htmlFor="plan-yearly" className="font-normal">
+                      Yearly ($99.99/year)
+                    </FieldLabel>
+                  </Field>
+                  <Field orientation="horizontal">
+                    <RadioGroupItem value="lifetime" id="plan-lifetime" />
+                    <FieldLabel htmlFor="plan-lifetime" className="font-normal">
+                      Lifetime ($299.99)
+                    </FieldLabel>
+                  </Field>
+                  <Field>
+                    <FieldError />
+                  </Field>
+                </RadioGroup>
+              </>
+            )}
+          </form.AppField>
+
           <div className="pt-4">
             <form.Subscribe
               selector={(state) => [state.canSubmit, state.isSubmitting]}
@@ -155,6 +206,7 @@ export default function App() {
                     type="button"
                     variant="outline"
                     onClick={(e) => {
+                      console.log(form.state.values)
                       e.preventDefault()
                       form.reset()
                     }}
