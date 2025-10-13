@@ -28,23 +28,16 @@ A seamless integration of [shadcn/ui](https://ui.shadcn.com/) Form components wi
    pnpm add @tanstack/react-form
    ```
 
-3. **Install Radix UI Slot**:
+3. **Add the shadcn/ui components you want. **Field component is required**.**:
 
-   ```bash
-   pnpm add @radix-ui/react-slot
-   ```
-
-4. **Add the Form component** to your project:
-
-   Copy the `form.tsx` file from this repository to your `components/ui/` folder.
-
-5. **Add the form-hook** to your project:
-
-   Copy the `hooks/form-hook.tsx` file from this repository to your `hooks/` folder.
-
-6. **Install additional shadcn/ui components** that you'll use with forms:
    ```bash
    pnpm dlx shadcn@latest add field button input label checkbox textarea
+   ```
+
+4. **Add the shadcn-tanstack-form components** to your project:
+
+   ```bash
+   pnpm dlx shadcn@latest add https://shadcn-tanstack-form.felipestanzani.com/r/shadcn-tanstack-form.json
    ```
 
 ### Prerequisites
@@ -300,21 +293,23 @@ Both cases will work flawlessly. The only "drawback" of not using our `<FieldDes
 
 Follow these steps to migrate from previous versions to 1.0.0:
 
-1. Update component names in your JSX to align with the new shadcn Field naming:
+1. Update component names in your TSX files to align with the new shadcn Field naming:
    - `FormItem` → `Field`
    - `FormLabel` → `FieldLabel`
    - `FormControl` → `FieldControl`
    - `FormDescription` → `FieldDescription`
    - `FormMessage` → `FieldError`
 
-2. Keep imports the same for the new API:
-   - Components: import from `@/components/ui/form`
-   - Hook: import from `@/hooks/form-hook`
-
-3. Ensure shadcn Field is installed (if not already):
+2. Ensure shadcn Field is installed (if not already):
 
    ```bash
    pnpm dlx shadcn@latest add field
+   ```
+
+3. Install the new version of form component:
+
+   ```bash
+   pnpm dlx shadcn@latest add https://shadcn-tanstack-form.felipestanzani.com/r/shadcn-tanstack-form.json
    ```
 
 ## 🏗️ Architecture
